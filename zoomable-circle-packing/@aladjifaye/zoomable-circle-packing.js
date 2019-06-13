@@ -61,8 +61,11 @@ Click to zoom in or out.`
           .attr("x",250)
           .attr("y",350)
           //.attr("transform", `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`)
-          .text("name : " + d.data.name +
-                      ", \nvalue : "+d.data.value);
+          .text("name : " + d.data.name)
+          .append("tspan")
+            .attr("x",250)
+            .attr("y",375)
+            .text("value : "+d.data.value);
 
 
 

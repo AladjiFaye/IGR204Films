@@ -21,7 +21,21 @@ Click to zoom in or out.`
       .on("click", () => zoom(root));
 
 
-
+function getValidName(string) {
+  //https://www.w3schools.com/jsref/jsref_replace.asp
+  //https://stackoverflow.com/questions/29246485/javascript-regex-problems-nothing-to-repeat
+  //on doit avoir un nom ne contenant que des lettres pour que celui ci soit "valide"
+  let res=string.replace(/ /g,""); //on enlève les espaces
+  res=res.replace(/\'/g,""); //on enlève les guillemets
+  res=res.replace(/&/g,""); //caractères spéciaux
+  res=res.replace(/:/g,"");
+  res=res.replace(/!/g,"");
+  res=res.replace(/\?/g,"");
+  res=res.replace(/,/g,"");
+  res=res.replace(/-/g,"");
+  res=res.replace(/\./g,"");
+  return res;
+}
 
 
   const node = svg.append("g")
@@ -29,27 +43,22 @@ Click to zoom in or out.`
     .data(root.descendants().slice(1))
     .join("circle")
       .attr("fill", d => d.children ? color(d.depth) : "white")
-      .attr("id", d=>d.data.name)
+      .attr("id", d=>{
+        let name = getValidName(d.data.name);
+        let parentName = getValidName(d.parent.data.name);
+        return parentName + name;
+      })
       //.attr("pointer-events", d => !d.children ? null : null)
       .on("mouseover", d=> {
         var v = [root.x, root.y, root.r*3]
         var k = width / v[2];
         var coord = d3.mouse(d3.event.currentTarget);
-        d3.select("#"+d.data.name).attr("stroke", "#000");
-        console.log((d.x - v[0]) * k);
-        console.log((d.y - v[0]) * k);
+        let name = getValidName(d.data.name);
+        let parentName = getValidName(d.parent.data.name);
+        d3.select("#"+parentName+name).attr("stroke", "#000");
+        console.log(parentName+name);
         if (!d.children) {
 
-          svg.selectAll("rect")
-            .data(root.descendants().slice(1))
-            .enter()
-            .append("rect")
-            .attr("id","meshbox")
-            .attr("width",200)
-            .attr("height",200)
-            .attr("style","position:fixed;stroke-width:3;stroke:rgb(0,0,0);fill:rgb(255,255,255);fill-opacity:0.0")
-            .attr("x",250)
-            .attr("y",250);
 
          d3.select("#textData").remove();
         d3.select("g")
@@ -57,14 +66,17 @@ Click to zoom in or out.`
           //.attr("id", "text"+d.data.name)
           .attr("id", "textData")
           //.attr("x",(d.x - v[0]) * k)
-          //.attr("y",(d.y - v[1]) * k)
+          //.attr("y",(d.y - v[1]) * k) //permet d'afficher sur la position du cercle au cas où...
+          .attr("font-size","8px")
+          // .attr("textLength","25%") //pour la longueur déterminée à l'avance du texte au cas où
+          // .attr("lengthAdjust","spacing") //idem
           .attr("x",250)
-          .attr("y",350)
+          .attr("y",275)
           //.attr("transform", `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`)
           .text("name : " + d.data.name)
           .append("tspan")
             .attr("x",250)
-            .attr("y",375)
+            .attr("y",300)
             .text("value : "+d.data.value);
 
 
@@ -81,7 +93,9 @@ Click to zoom in or out.`
         }
       })
       .on("mouseout", d=> {
-        d3.select("#" + d.data.name).attr("stroke", null);
+        let name = getValidName(d.data.name);
+        let parentName = getValidName(d.parent.data.name);
+        d3.select("#" + parentName+name).attr("stroke", null);
         /*if(!d.children) {
          d3.select("#text"+d.data.name)
           .remove();
@@ -92,7 +106,32 @@ Click to zoom in or out.`
 
 
 
+  const rect = svg.append("rect")
+    .attr("id","textbox")
+    .attr("width",210)
+    .attr("height",215)
+    .attr("style","position:fixed;stroke-width:3;stroke:rgb(0,0,0);fill:rgb(255,255,255);fill-opacity:0.0")
+    .attr("x",250)
+    .attr("y",250);
 
+    const text = svg.append("text")
+      .attr("id","movietext")
+      .attr("x",250)
+      .attr("y",245)
+      .attr("font-size","10px")
+      .text("Movie information");
+
+
+  // const rect = svg.selectAll("rect")
+  //   .data(root.descendants().slice(1))
+  //   .enter()
+  //   .append("rect")
+  //   .attr("id","textbox")
+  //   .attr("width",210)
+  //   .attr("height",215)
+  //   .attr("style","position:fixed;stroke-width:3;stroke:rgb(0,0,0);fill:rgb(255,255,255);fill-opacity:0.0")
+  //   .attr("x",250)
+  //   .attr("y",250);
 
   const label = svg.append("g")
       .attr("id","labels")
@@ -106,6 +145,9 @@ Click to zoom in or out.`
       .style("display", d => d.parent === root ? "inline" : "none")
       .text(d => d.data.name);
 
+
+
+
   zoomTo([root.x, root.y, root.r*3]);
 
   function zoomTo(v) {
@@ -114,6 +156,7 @@ Click to zoom in or out.`
     view = v;
 
     label.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
+    //rect.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
     node.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
     //d3.selectAll(".textclass").attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
     node.attr("r", d => d.r * k);

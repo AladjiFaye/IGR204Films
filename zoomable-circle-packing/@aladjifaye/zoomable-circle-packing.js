@@ -12,8 +12,8 @@ Click to zoom in or out.`
   let focus = root;
   let view;
 
-  const svg = d3.create("svg")
-      .attr("viewBox", `-${width / 2} -${height / 2} ${width} ${height}`)
+  const svg = d3.select("#test").append("svg")
+      .attr("viewBox", `-${width / 2} -${height / 2} ${width/0.75} ${height/0.75}`)
       .style("display", "block")
       .style("margin", "0 -14px")
       .style("background", color(0))
@@ -36,6 +36,8 @@ function getValidName(string) {
   res=res.replace(/\./g,"");
   return res;
 }
+
+
 
 
   const node = svg.append("g")
@@ -70,13 +72,13 @@ function getValidName(string) {
           .attr("font-size","8px")
           // .attr("textLength","25%") //pour la longueur déterminée à l'avance du texte au cas où
           // .attr("lengthAdjust","spacing") //idem
-          .attr("x",250)
-          .attr("y",275)
+          .attr("x",350)
+          .attr("y",160)
           //.attr("transform", `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`)
           .text("name : " + d.data.name)
           .append("tspan")
-            .attr("x",250)
-            .attr("y",300)
+            .attr("x",350)
+            .attr("y",175)
             .text("value : "+d.data.value);
 
 
@@ -106,20 +108,6 @@ function getValidName(string) {
 
 
 
-  const rect = svg.append("rect")
-    .attr("id","textbox")
-    .attr("width",210)
-    .attr("height",215)
-    .attr("style","position:fixed;stroke-width:3;stroke:rgb(0,0,0);fill:rgb(255,255,255);fill-opacity:0.0")
-    .attr("x",250)
-    .attr("y",250);
-
-    const text = svg.append("text")
-      .attr("id","movietext")
-      .attr("x",250)
-      .attr("y",245)
-      .attr("font-size","10px")
-      .text("Movie information");
 
 
   // const rect = svg.selectAll("rect")
@@ -145,7 +133,38 @@ function getValidName(string) {
       .style("display", d => d.parent === root ? "inline" : "none")
       .text(d => d.data.name);
 
-
+      const whiteband = svg.append("rect")
+        .attr("id","bandeau")
+        .attr("width",500)
+        .attr("height",1000)
+        .attr("style","position:fixed;stroke-width:3;stroke:rgb(0,0,0);fill:rgb(255,255,255)")
+        .attr("x",350)
+        .attr("y",-500);
+      //
+      // const rect = svg.append("rect")
+      //   .attr("id","textbox")
+      //   .attr("width",210)
+      //   .attr("height",125)
+      //   .attr("style","position:fixed;stroke-width:3;stroke:rgb(0,0,0);fill:hsl(152,80%,80%);")
+      //   .attr("x",350)
+      //   .attr("y",150);
+      //
+      //
+      //
+      //   const bandeau = svg.append("rect")
+      //     .attr("id","bandeau")
+      //     .attr("width",210)
+      //     .attr("height",400)
+      //     .attr("style","position:fixed;stroke-width:3;stroke:rgb(0,0,0);fill:hsl(152,80%,80%)")
+      //     .attr("x",350)
+      //     .attr("y",-300);
+      //
+      //   const text = svg.append("text")
+      //     .attr("id","movietext")
+      //     .attr("x",350)
+      //     .attr("y",135)
+      //     .attr("font-size","10px")
+      //     .text("Movie information");
 
 
   zoomTo([root.x, root.y, root.r*3]);
@@ -170,7 +189,7 @@ function getValidName(string) {
     const transition = svg.transition()
         .duration(d3.event.altKey ? 7500 : 750)
         .tween("zoom", d => {
-          const i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2]);
+          const i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 4]);
           return t => zoomTo(i(t));
         });
 
@@ -186,7 +205,7 @@ function getValidName(string) {
 }
 );
   main.variable(observer("data")).define("data", ["d3"], function(d3){return(
-d3.json("https://gist.githubusercontent.com/Guanaco2569/ea551601561e1a9e6739bdbf7ad7c6ab/raw/26185767c4d920d5b303da50b50e093ac30636da/parsed.json")
+d3.json("https://gist.githubusercontent.com/Guanaco2569/ea551601561e1a9e6739bdbf7ad7c6ab/raw/e3f8c0de067d0804bf016ccefa47e80da723328e/parsed.json")
 )});
   main.variable(observer("pack")).define("pack", ["d3","width","height"], function(d3,width,height){return(
 data => d3.pack()

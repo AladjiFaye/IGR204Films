@@ -155,6 +155,16 @@ Click to zoom in or out.`
                  .attr("font-size","12px")
                  .text("Movie information");
 
+              const image = svg2.append("image")
+                  .attr("xlink:href","https://images.ecosia.org/WmDTsFAleKz5loQc6c9OouC3UWc=/0x390/smart/https%3A%2F%2Fwallpapertag.com%2Fwallpaper%2Ffull%2F4%2Fc%2Ff%2F537285-white-screen-wallpaper-2560x1600-retina.jpg")
+                  // .style("position","relative")
+                  .attr("x",21)
+                   .attr("y",441)
+                  .attr("width",298)
+                  .attr("height",148)
+                  .attr("preserveAspectRatio","none")
+                  // .attr("viewBox","0 0 5000 5000");
+
   zoomTo([root.x, root.y, root.r * 2]);
 
   function zoomTo(v) {
@@ -191,7 +201,7 @@ Click to zoom in or out.`
 }
 );
   main.variable(observer("data")).define("data", ["d3"], function(d3){return(
-d3.json("https://gist.githubusercontent.com/Guanaco2569/ea551601561e1a9e6739bdbf7ad7c6ab/raw/e3f8c0de067d0804bf016ccefa47e80da723328e/parsed.json")
+d3.json("https://gist.githubusercontent.com/Guanaco2569/ea551601561e1a9e6739bdbf7ad7c6ab/raw/7e88a9548f504abeea4dde00f87dbef710611a63/parsed.json")
 )});
   main.variable(observer("pack")).define("pack", ["d3","width","height"], function(d3,width,height){return(
 data => d3.pack()

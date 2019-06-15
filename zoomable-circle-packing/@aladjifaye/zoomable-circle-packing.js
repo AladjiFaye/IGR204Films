@@ -28,15 +28,8 @@ Click to zoom in or out.`
             //https://www.w3schools.com/jsref/jsref_replace.asp
             //https://stackoverflow.com/questions/29246485/javascript-regex-problems-nothing-to-repeat
             //on doit avoir un nom ne contenant que des lettres pour que celui ci soit "valide"
-            let res=string.replace(/ /g,""); //on enlève les espaces
-            res=res.replace(/\'/g,""); //on enlève les guillemets
-            res=res.replace(/&/g,""); //caractères spéciaux
-            res=res.replace(/:/g,"");
-            res=res.replace(/!/g,"");
-            res=res.replace(/\?/g,"");
-            res=res.replace(/,/g,"");
-            res=res.replace(/-/g,"");
-            res=res.replace(/\./g,"");
+
+            let res = string.replace(/[\W_]+/g, ''); //https://stackoverflow.com/questions/30824525/remove-all-characters-that-are-not-letters-or-numbers-in-a-string
             return res;
           }
 
@@ -61,7 +54,6 @@ Click to zoom in or out.`
                   let name = getValidName(d.data.name);
                   let parentName = getValidName(d.parent.data.name);
                   d3.select("#"+parentName+name).attr("stroke", "#000");
-                  console.log(parentName+name);
                   if (!d.children) {
 
 
@@ -81,7 +73,22 @@ Click to zoom in or out.`
                     .append("tspan")
                       .attr("x",25)
                       .attr("y",480)
-                      .text("value : "+d.data.value);
+                      .text("Popularity (rated from 0 to 100) : "+d.data.value);
+
+                      if (d.data.awards=="Yes") {
+                        d3.select("#textData")
+                        .append("tspan")
+                          .attr("x",25)
+                          .attr("y",495)
+                          .text("Has received awards");
+                      }
+                      else {
+                        d3.select("#textData")
+                        .append("tspan")
+                          .attr("x",25)
+                          .attr("y",495)
+                          .text("Has not received awards");
+                      }
 
 
 

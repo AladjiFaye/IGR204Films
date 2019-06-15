@@ -127,7 +127,7 @@ Click to zoom in or out.`
              .style("cursor", "pointer")
              .style("position","absolute")
              .style("top","-0px")
-             .style("left","50%")
+             .style("left","59%")
 
              const whiteband = svg2.append("rect")
                .attr("id","bandeau")

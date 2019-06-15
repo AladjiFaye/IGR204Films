@@ -49,8 +49,8 @@ var svg3 = d3.select("#div2").append("svg")
 	.attr("width", width + margin.right + margin.left)
 	.attr("height", height + margin.top + margin.bottom)
   .style("position","absolute")
-  .style("top","-50px")
-  .style("left","750px")
+  .style("top","0px")
+  .style("left","60%")
   .append("g")
 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 

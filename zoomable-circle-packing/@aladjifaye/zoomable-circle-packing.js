@@ -14,7 +14,7 @@ Click to zoom in or out.`
 
   const svg = d3.select("#test").append("svg")
       .attr("viewBox", `-${width / 2} -${height /2} ${width} ${height/1}`)
-      .attr("width",675)
+      .attr("width",750)
       .attr("height",600)
       .style("float","left")
       .style("position","absolute")
@@ -141,7 +141,7 @@ Click to zoom in or out.`
              .style("cursor", "pointer")
              .style("position","absolute")
              .style("top","-0px")
-             .style("left","650px")
+             .style("left","725px")
              .on("click", () => zoom(root));
 
              const whiteband = svg2.append("rect")

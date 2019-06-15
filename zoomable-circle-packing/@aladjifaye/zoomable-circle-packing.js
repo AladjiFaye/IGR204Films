@@ -67,26 +67,26 @@ Click to zoom in or out.`
                     // .attr("textLength","25%") //pour la longueur déterminée à l'avance du texte au cas où
                     // .attr("lengthAdjust","spacing") //idem
                     .attr("x",25)
-                    .attr("y",465)
+                    .attr("y",455)
                     //.attr("transform", `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`)
                     .text("name : " + d.data.name)
                     .append("tspan")
                       .attr("x",25)
-                      .attr("y",480)
+                      .attr("y",470)
                       .text("Popularity (rated from 0 to 100) : "+d.data.value);
 
                       if (d.data.awards=="Yes") {
                         d3.select("#textData")
                         .append("tspan")
                           .attr("x",25)
-                          .attr("y",495)
+                          .attr("y",485)
                           .text("Has received awards");
                       }
                       else {
                         d3.select("#textData")
                         .append("tspan")
                           .attr("x",25)
-                          .attr("y",495)
+                          .attr("y",485)
                           .text("Has not received awards");
                       }
 

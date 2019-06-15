@@ -1,11 +1,11 @@
 // https://observablehq.com/@d3/zoomable-circle-packing@157
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+  /*main.variable(observer()).define(["md"], function(md){return(
 md`# Zoomable Circle Packing
 
 Click to zoom in or out.`
-)});
+)});*/
   main.variable(observer("chart")).define("chart", ["pack","data","d3","width","height","color"], function(pack,data,d3,width,height,color)
 {
   const root = pack(data);
@@ -13,11 +13,13 @@ Click to zoom in or out.`
   let view;
 
   const svg = d3.select("#test").append("svg")
-      .attr("viewBox", `-${width / 2} -${height /2.1} ${width} ${height/1.065}`)
-      .attr("width",700)
+      .attr("viewBox", `-${width / 2} -${height /2} ${width} ${height/1}`)
+      .attr("width",675)
       .attr("height",600)
       .style("float","left")
-
+      .style("position","absolute")
+      .style("top","0px")
+      .style("left","0px")
       .style("display", "block")
       .style("margin", "0 -14px")
       .style("background", color(0))
@@ -78,6 +80,7 @@ Click to zoom in or out.`
                       if (d.data.awards=="Yes") {
                         d3.select("#textData")
                         .append("tspan")
+                          .attr("fill","red")
                           .attr("x",25)
                           .attr("y",485)
                           .text("Has received awards");
@@ -136,6 +139,9 @@ Click to zoom in or out.`
              // .style("margin", "0 -14px")
              .style("background", "rgb(0,255,255)")
              .style("cursor", "pointer")
+             .style("position","absolute")
+             .style("top","-0px")
+             .style("left","650px")
              .on("click", () => zoom(root));
 
              const whiteband = svg2.append("rect")

@@ -3,7 +3,12 @@
 <title>Zoomable Circle Packing</title>
 <link rel="stylesheet" type="text/css" href="./inspector.css">
 <body>
-<div id="test" >
+<div id="div1" >
+  <svg id="svg1"></svg>
+</div>
+<div id="div2">
+  <svg id="svg2"></svg>
+</div>
 <script type="module">
 
 import {Runtime, Inspector} from "./runtime.js";
@@ -13,5 +18,32 @@ const runtime = new Runtime();
 const main = runtime.module(define, Inspector.into(document.body));
 
 </script>
+<!-- load the d3.js library -->
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<style>
+
+.node {
+cursor: pointer;
+}
+
+.node circle {
+fill: #fff;
+stroke: steelblue;
+stroke-width: 3px;
+}
+
+.node text {
+font: 12px sans-serif;
+}
+
+.link {
+fill: none;
+stroke: #ccc;
+stroke-width: 2px;
+}
+</style>
+
+
+  <script type="text/javascript" src="../Tree_demo/tree.js"> </script>
 </div>
 </body>

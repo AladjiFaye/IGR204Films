@@ -28,9 +28,9 @@ var data = [{ "name" : "Title 0.1", "parent":"Subject 0" },{ "name" : "Length 0.
     });
 
 // ************** Generate the tree diagram	 *****************
-var margin = {top: 20, right: 120, bottom: 20, left: 120},
+var margin = {top: 150, right: 120, bottom: 20, left: 80},
 	width = 960 - margin.right - margin.left,
-	height = 500 - margin.top - margin.bottom;
+	height = 300 - margin.top - margin.bottom;
 
 var i = 0,
 	duration = 750,
@@ -42,9 +42,15 @@ var tree = d3.layout.tree()
 var diagonal = d3.svg.diagonal()
 	.projection(function(d) { return [d.y, d.x]; });
 
-var svg = d3.select("body").append("svg")
+var svg3 = d3.select("#div2").append("svg")
+  .attr("id","svg3")
+  // .attr("width",200)
+  // .attr("height",300)
 	.attr("width", width + margin.right + margin.left)
 	.attr("height", height + margin.top + margin.bottom)
+  .style("position","absolute")
+  .style("top","-50px")
+  .style("left","750px")
   .append("g")
 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -67,7 +73,7 @@ function update(source) {
   nodes.forEach(function(d) { d.y = d.depth * 180; });
 
   // Update the nodes…
-  var node = svg.selectAll("g.node")
+  var node = svg3.selectAll("g.node")
 	  .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
   // Enter any new nodes at the parent's previous position.
@@ -115,7 +121,7 @@ function update(source) {
 	  .style("fill-opacity", 1e-6);
 
   // Update the links…
-  var link = svg.selectAll("path.link")
+  var link = svg3.selectAll("path.link")
 	  .data(links, function(d) { return d.target.id; });
 
   // Enter any new links at the parent's previous position.

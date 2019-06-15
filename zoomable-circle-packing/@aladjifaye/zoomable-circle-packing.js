@@ -1,18 +1,18 @@
 // https://observablehq.com/@d3/zoomable-circle-packing@157
 export default function define(runtime, observer) {
   const main = runtime.module();
-  /*main.variable(observer()).define(["md"], function(md){return(
+  main.variable(observer()).define(["md"], function(md){return(
 md`# Zoomable Circle Packing
 
 Click to zoom in or out.`
-)});*/
+)});
   main.variable(observer("chart")).define("chart", ["pack","data","d3","width","height","color"], function(pack,data,d3,width,height,color)
 {
   const root = pack(data);
   let focus = root;
   let view;
 
-  const svg = d3.select("#test").append("svg")
+  const svg1 = d3.select("#svg1")
       .attr("viewBox", `-${width / 2} -${height /2} ${width} ${height/1}`)
       .attr("width",750)
       .attr("height",600)
@@ -38,7 +38,7 @@ Click to zoom in or out.`
 
 
 
-            const node = svg.append("g")
+            const node = svg1.append("g")
               .selectAll("circle")
               .data(root.descendants().slice(1))
               .join("circle")
@@ -93,32 +93,18 @@ Click to zoom in or out.`
                           .text("Has not received awards");
                       }
 
-
-
-                    //svg.append("rect")
-                  //.attr("id","textbox")
-              //<rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:3;
-               //   .attr("width","150")
-                //  .attr("heidth","150")
-             //     .attr("style","height:10px;width:50px;border-style:solid;border-width:2px;position:fixed;")
-             //     .attr("style","fill:rgb(0,0,255);stroke-width:3;");
-                //.text("qgqfrejqkghrqkdfhreqkghkqehfkrelhgrk");
-
                   }
                 })
                 .on("mouseout", d=> {
                   let name = getValidName(d.data.name);
                   let parentName = getValidName(d.parent.data.name);
                   d3.select("#" + parentName+name).attr("stroke", null);
-                  /*if(!d.children) {
-                   d3.select("#text"+d.data.name)
-                    .remove();
-                  }*/
+
 
                 })
                 .on("click", d => focus !== d && (zoom(d), d3.event.stopPropagation()));
 
-  const label = svg.append("g")
+  const label = svg1.append("g")
       .style("font", "10px sans-serif")
       .attr("pointer-events", "none")
       .attr("text-anchor", "middle")
@@ -130,7 +116,7 @@ Click to zoom in or out.`
       .text(d => d.data.name);
 
 
-      const svg2 = d3.select("#test").append("svg")
+      const svg2 = d3.select("#svg2")
                // .attr("viewBox", `-${width /2.5} -${height / 2.5} ${width/1.25} ${height}`)
              // .style("display", "block")
               // .style("float","right")
@@ -142,7 +128,6 @@ Click to zoom in or out.`
              .style("position","absolute")
              .style("top","-0px")
              .style("left","725px")
-             .on("click", () => zoom(root));
 
              const whiteband = svg2.append("rect")
                .attr("id","bandeau")
@@ -195,7 +180,7 @@ Click to zoom in or out.`
 
     focus = d;
 
-    const transition = svg.transition()
+    const transition = svg1.transition()
         .duration(d3.event.altKey ? 7500 : 750)
         .tween("zoom", d => {
           const i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2]);

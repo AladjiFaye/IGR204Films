@@ -5,10 +5,10 @@
 <body>
 <div id="div1" >
   <svg id="svg1"></svg>
-</div>
-<div id="div2">
   <svg id="svg2"></svg>
 </div>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
 <script type="module">
 
 import {Runtime, Inspector} from "./runtime.js";
@@ -19,7 +19,9 @@ const main = runtime.module(define, Inspector.into(document.body));
 
 </script>
 <!-- load the d3.js library -->
-<script src="http://d3js.org/d3.v3.min.js"></script>
+<!--
+<script type="text/javascript" src="tree.js"> </script>
+-->
 <style>
 
 .node {
@@ -42,8 +44,5 @@ stroke: #ccc;
 stroke-width: 2px;
 }
 </style>
-
-
-  <script type="text/javascript" src="../Tree_demo/tree.js"> </script>
 </div>
 </body>

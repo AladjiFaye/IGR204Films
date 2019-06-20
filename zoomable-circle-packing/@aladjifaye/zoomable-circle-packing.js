@@ -488,7 +488,7 @@ Click to zoom in or out.`
       }
     });
   }
-  // search("kiss")
+  
   function colorize_node(node_id)
   {
     d3.select("#"+node_id).style('fill', 'orange').style("opacity", 0.5);

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Zoomable Circle Packing</title>
+<link rel="stylesheet" type="text/css" href="./inspector.css">
+<body>
+      <!-- <input id="entry" type="text" id="search" name="search" onkeyup="refresh_search()" placeholder="Search.."> -->
+      <!-- <input id="search" type="text"  placeholder="Search..">   -->
+
+      <br><br>
+<div id="div1" >
+  <svg id="svg1"></svg>
+  <svg id="svg2"></svg>
+</div>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script type="module">
+
+import {Runtime, Inspector} from "./runtime.js";
+import define from "./@aladjifaye/zoomable-circle-packing.js";
+
+const runtime = new Runtime();
+const main = runtime.module(define, Inspector.into(document.body));
+
+</script>
+<!-- load the d3.js library -->
+<!--
+<script type="text/javascript" src="test.js"> </script>
+-->
+<style>
+
+.node {
+cursor: pointer;
+}
+
+.node circle {
+fill: #fff;
+stroke: steelblue;
+stroke-width: 3px;
+}
+
+.node text {
+font: 12px sans-serif;
+}
+
+.link {
+fill: none;
+stroke: #ccc;
+stroke-width: 2px;
+}
+
+
+input[type=text] {
+  width: 130px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  font-size: 16px;
+  background-color: white;
+  background-image: url('search.png');
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+}
+
+input[type=text]:focus {
+  width: 98%;
+}
+</style>
+</div>
+</body>

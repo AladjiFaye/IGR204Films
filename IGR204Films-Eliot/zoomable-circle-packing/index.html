@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Zoomable Circle Packing</title>
+<link rel="stylesheet" type="text/css" href="./inspector.css">
+<body>
+      <!-- <input id="entry" type="text" id="search" name="search" onkeyup="refresh_search()" placeholder="Search.."> -->
+      <!-- <input id="search" type="text"  placeholder="Search..">   -->
+      
+        <form autocomplete="off">
+          <div class="autocomplete" style="width:98%;">
+            <!-- <input id="search" type="text" placeholder="Search .."> -->
+          </div>
+          <!-- <input type="submit"> -->
+        </form>
+      <br><br>
+<div id="div1" >
+  <svg id="svg1"></svg>
+  <svg id="svg2"></svg>
+</div>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script type="module">
+
+import {Runtime, Inspector} from "./runtime.js";
+import define from "./@aladjifaye/zoomable-circle-packing.js";
+
+const runtime = new Runtime();
+const main = runtime.module(define, Inspector.into(document.body));
+
+</script>
+
+<!-- <script src="autocomplete.js"></script> -->
+
+<!-- load the d3.js library -->
+<!--
+<script type="text/javascript" src="test.js"> </script>
+-->
+<style>
+
+.node {
+cursor: pointer;
+}
+
+.node circle {
+fill: #fff;
+stroke: steelblue;
+stroke-width: 3px;
+}
+
+.node text {
+font: 12px sans-serif;
+}
+
+.link {
+fill: none;
+stroke: #ccc;
+stroke-width: 2px;
+}
+
+
+/*the container must be positioned relative:*/
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+
+input[type=text] {
+  width: 130px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  font-size: 16px;
+  background-color: white;
+  background-image: url('search.png');
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+}
+
+input[type=text]:focus {
+  width: 98%;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+  width:98%;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+  background-color: #e9e9e9; 
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
+}
+</style>
+</body>

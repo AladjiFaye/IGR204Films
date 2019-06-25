@@ -7,13 +7,9 @@ def fill(Data,name,nbr):
         parent_=name[i]+" "+str(i)
         for j in range(0, len(name)):
             if j!=i:
-                Data = Data + prepare(name[j]+" "+str(i)+"."+str(j), parent_, nbr)
-                parent = name[j]+" "+str(i)+"."+str(j)
-                for k in range(0,len(name)):
-                    if ((k != i) & (k!=j)):
-                        nbr = nbr + 1
-                        Data = Data + prepare(name[k]+" "+str(i)+"."+str(j)+"."+str(k), parent, nbr)
-                        Data =Data + prepare(name[k]+ "     end",name[k]+" "+str(i)+"."+str(j)+"."+str(k),nbr)
+                parent = name[j] + " " + str(i) + "." + str(j)
+                Data = Data + prepare(parent, parent_, nbr)
+                Data = Data + prepare(name[j] + "     end", parent, nbr)
     for i in range(0,len(name)):
         Data = Data + prepare(name[i]+" "+str(i), "Racine", nbr)
     Data = Data + prepare("Racine","",nbr)

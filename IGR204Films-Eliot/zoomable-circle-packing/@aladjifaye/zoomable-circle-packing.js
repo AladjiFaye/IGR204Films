@@ -202,16 +202,32 @@ Click to zoom in or out.`
              .style("background", "rgb(255,255,255)")
              .style("cursor", "pointer")
              // .style("position","absolute")
-             .style("top","-0px")
+             .style("top","-0px");
              // .style("left","70%")
+
 
              const whiteband = svg2.append("rect")
                .attr("id","bandeau")
                .attr("width","100%")
                .attr("height","100%")
-               .attr("style","position:fixed;stroke-width:3;stroke:rgb(0,0,0);fill-opacity:0;")
+               .attr("style","position:fixed;stroke-width:3;stroke:rgb(0,0,0);fill-opacity:0;");
                // .attr("x",350)
                // .attr("y",-500);
+
+               const infoText1 = svg2.append("text")
+                    .attr("x",10)
+                    .attr("y",20)
+                    .attr("font-size","12px")
+                    .text("The darker blue circles are the ones with the most popular movies in.");
+
+                    const infoText2 = svg2.append("text")
+                         .attr("x",10)
+                         .attr("y",35)
+                         .attr("font-size","12px")
+                         .text("The films with yellow circles are the one that have an award.");
+
+
+
 
              const rect = svg2.append("rect")
                .attr("id","imagebox")

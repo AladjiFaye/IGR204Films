@@ -34,6 +34,13 @@ Click to zoom in or out.`
       .style("cursor", "pointer")
       .on("click", () => zoom(zoomRoot));
 
+      // const whiteband1 = svg1.append("rect")
+      //   .attr("id","bandeau1")
+      //   .attr("width","10%")
+      //   .attr("height","100%")
+      //   .attr("x","-350")
+      //   .attr("y","-375")
+      //   .attr("style","stroke-width:3;stroke:rgb(0,0,0);fill-opacity:0;")
 
       function getValidName(string) {
             //https://www.w3schools.com/jsref/jsref_replace.asp
@@ -41,31 +48,63 @@ Click to zoom in or out.`
             //on doit avoir un nom ne contenant que des lettres pour que celui ci soit "valide"
 
             let res = string.replace(/[\W_]+/g, ''); //https://stackoverflow.com/questions/30824525/remove-all-characters-that-are-not-letters-or-numbers-in-a-string
-            res=res.replace("1","a1");  //commencer un ID par un chiffre n'est pas permis par JS
-            return res;
+            // res=res.replace(/[0-9]+/g,"a1");  //commencer un ID par un chiffre n'est pas permis par JS
+            return "a"+res; //commencer un ID par un chiffre n'est pas permis par JS
           }
+
+            console.log(zoomRoot.descendants().slice(1));
 
             let zoomNode = svg1.append("g")
               .selectAll("circle")
               .data(zoomRoot.descendants().slice(1))
               .join("circle")
-                .attr("fill", d => d.children ? color(d.depth) : "white")
+                .attr("fill", d => {
+                  if (d.children){
+                    if (d.children[0].children) {
+                      return color(d.depth);
+                    }
+                    else {
+                      let mean_pop=0; //popularité moyenne des cercles
+                      for (let i = 0; i < d.children.length; i++) {
+                        mean_pop += d.children[i]["value"]/d.children.length;
+                      }
+                      let lightness = -0.85*mean_pop + 100;
+                      return "hsl(240,20%," +lightness+"%)";
+                    }
+                }
+                else {
+                  if (d.data.awards=="Yes") {
+                    return "#ffff99";
+                  }
+                  else {
+                    return "white";
+                  }
+                }
+                  d.children ? color(d.depth) : d.data.awards=="Yes" ? "#ffff99" : "white";
+                })
                 .attr("id", d=>{
                   let name = getValidName(d.data.name);
                   let parentName = getValidName(d.parent.data.name);
                   return parentName + name;
                 })
-                //.attr("pointer-events", d => !d.children ? null : null)
+
                 .on("mouseover", d=> {
-                  var v = [zoomRoot.x, zoomRoot.y, zoomRoot.r*3]
+                  var v = [focus.x, focus.y, focus.r*2]
                   var k = width / v[2];
                   var coord = d3.mouse(d3.event.currentTarget);
                   let name = getValidName(d.data.name);
                   let parentName = getValidName(d.parent.data.name);
-                  console.log(parentName+name);
                   d3.select("#"+parentName+name).attr("stroke", "#000");
                   if (!d.children) {
-
+                    d3.select("#movieName").remove();
+                    svg1.append("text")
+                      .attr("id","movieName")
+                      .attr("font-size","12px")
+                      .attr("x",(d.x-v[0])*k)
+                      .attr("y",(d.y-v[1])*k)
+                      .style("display", "inline")
+                      .text(d.data.name);
+                    // d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`
 
                    d3.select("#textData").remove();
                   svg2.append("text")
@@ -76,35 +115,60 @@ Click to zoom in or out.`
                     .attr("font-size","12px")
                     // .attr("textLength","25%") //pour la longueur déterminée à l'avance du texte au cas où
                     // .attr("lengthAdjust","spacing") //idem
-                    .attr("x",25)
+                    .attr("x",350)
                     .attr("y",455)
                     //.attr("transform", `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`)
                     .text("name : " + d.data.name)
                     .append("tspan")
-                      .attr("x",25)
+                      .attr("x",350)
                       .attr("y",470)
-                      .text("Popularity (rated from 0 to 100) : "+d.data.value);
+                      .text("Popularity (rated from 0 to 100) : "+(d.data.value-10));
 
                       if (d.data.awards=="Yes") {
+
                         d3.select("#textData")
                         .append("tspan")
                           .attr("fill","red")
-                          .attr("x",25)
+                          .attr("x",350)
                           .attr("y",485)
                           .text("Has received awards");
                       }
                       else {
                         d3.select("#textData")
                         .append("tspan")
-                          .attr("x",25)
+                          .attr("x",350)
                           .attr("y",485)
                           .text("Has not received awards");
                       }
 					  d3.select("#textData")
                       .append("tspan")
-                        .attr("x",25)
+                        .attr("x",350)
                         .attr("y",500)
                         .text("Movie length (in minutes): " + dataFilms[d.data.name]["Length"].toString());
+
+                        d3.select("#textData")
+                                  .append("tspan")
+                                    .attr("x",350)
+                                    .attr("y",515)
+                                    .text("Year: " + dataFilms[d.data.name]["Year"].toString());
+
+
+
+                                    var pathFile = d.data.name.replace(",", "").replace(":", "").replace("?", "").replace("/", " ");
+                                    pathFile = "images/film " + pathFile + " (" + dataFilms[d.data.name]["Year"].toString() + ")/image.png";
+
+                                      svg2.append("image")
+                                      //nom du film : d.data.name
+                                      //year : dataFilms[d.data.name]["Year"].toString()
+                                          .attr("xlink:href",pathFile)
+                                          // .style("position","relative")
+                                          .attr("x",186)
+                                           .attr("y",376)
+                                          .attr("width",148)
+                                          .attr("height",198)
+                                          .attr("preserveAspectRatio","none")
+
+
                   }
                 })
                 .on("mouseout", d=> {
@@ -125,7 +189,7 @@ Click to zoom in or out.`
     .join("text")
       .style("fill-opacity", d => d.parent === zoomRoot ? 1 : 0)
       .style("display", d => d.parent === zoomRoot ? "inline" : "none")
-      .text(d => d.data.name);
+      .text(d => d.parent === zoomRoot ? d.data.name : (d.children ? d.data.name : ""));
 
 
       const svg2 = d3.select("#svg2")
@@ -135,7 +199,7 @@ Click to zoom in or out.`
               .attr("width","50%")
               .attr("height",600)
              // .style("margin", "0 -14px")
-             .style("background", "rgb(0,255,255)")
+             .style("background", "rgb(255,255,255)")
              .style("cursor", "pointer")
              // .style("position","absolute")
              .style("top","-0px")
@@ -150,29 +214,21 @@ Click to zoom in or out.`
                // .attr("y",-500);
 
              const rect = svg2.append("rect")
-               .attr("id","textbox")
-               .attr("width",300)
-               .attr("height",150)
+               .attr("id","imagebox")
+               .attr("width",150)
+               .attr("height",200)
                .attr("style","position:fixed;stroke-width:3;stroke:rgb(0,0,0);fill-opacity:0;")
-               .attr("x",20)
-               .attr("y",440);
+               .attr("x",185)
+               .attr("y",375);
 
 
                const text = svg2.append("text")
                  .attr("id","movietext")
-                 .attr("x",20)
-                 .attr("y",435)
+                 .attr("x",190)
+                 .attr("y",370)
                  .attr("font-size","12px")
                  .text("Movie information");
 
-              const image = svg2.append("image")
-                  .attr("xlink:href","https://images.ecosia.org/WmDTsFAleKz5loQc6c9OouC3UWc=/0x390/smart/https%3A%2F%2Fwallpapertag.com%2Fwallpaper%2Ffull%2F4%2Fc%2Ff%2F537285-white-screen-wallpaper-2560x1600-retina.jpg")
-                  // .style("position","relative")
-                  .attr("x",21)
-                   .attr("y",441)
-                  .attr("width",298)
-                  .attr("height",148)
-                  .attr("preserveAspectRatio","none")
 
 
 
@@ -210,7 +266,7 @@ Click to zoom in or out.`
                   	.attr("width", treeWidth + margin.right + margin.left)
                   	.attr("height", treeHeight + margin.top + margin.bottom)
                     .style("position","absolute")
-                    .style("top","0px")
+                    .style("top","100px")
                     .style("left","50%")
                     .append("g")
                   	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -342,8 +398,7 @@ Click to zoom in or out.`
 
                   // Toggle children on click.
                   function click(d) {
-                    //je laisse ici le code de Paul-Ernest un peu modifié;
-                    // il faudra l'adapter à la forme de la bdd comme celle d'Eliot.
+
 
                     d.children = d.children ? null : d._children;
                      if (d.parent) {
@@ -397,26 +452,63 @@ Click to zoom in or out.`
 
 					  svg1.selectAll("g").remove();
 
+
+
+
 					  zoomNode = svg1.append("g")
               .selectAll("circle")
               .data(zoomRoot.descendants().slice(1))
               .join("circle")
-                .attr("fill", d => d.children ? color(d.depth) : "white")
+              .attr("fill", d => {
+                if (d.children){
+                  if (d.children[0].children) {
+                    return color(d.depth);
+                  }
+                  else {
+                    let mean_pop=0; //popularité moyenne des cercles
+                    for (let i = 0; i < d.children.length; i++) {
+                      mean_pop += d.children[i]["value"]/d.children.length;
+                    }
+                    let lightness = -0.85*mean_pop + 100;
+                    return "hsl(240,20%," +lightness+"%)";
+                  }
+              }
+              else {
+                if (d.data.awards=="Yes") {
+                  return "#ffff99";
+                }
+                else {
+                  return "white";
+                }
+              }
+                d.children ? color(d.depth) : d.data.awards=="Yes" ? "#ffff99" : "white";
+
+              })
+
+
+
                 .attr("id", d=>{
                   let name = getValidName(d.data.name);
                   let parentName = getValidName(d.parent.data.name);
                   return parentName + name;
                 })
-                //.attr("pointer-events", d => !d.children ? null : null)
                 .on("mouseover", d=> {
-                  var v = [zoomRoot.x, zoomRoot.y, zoomRoot.r*3]
+                  var v = [focus.x, focus.y, focus.r*2]
                   var k = width / v[2];
                   var coord = d3.mouse(d3.event.currentTarget);
                   let name = getValidName(d.data.name);
                   let parentName = getValidName(d.parent.data.name);
                   d3.select("#"+parentName+name).attr("stroke", "#000");
                   if (!d.children) {
-
+                    d3.select("#movieName").remove();
+                    svg1.append("text")
+                      .attr("id","movieName")
+                      .attr("font-size","12px")
+                      .attr("x",(d.x-v[0])*k)
+                      .attr("y",(d.y-v[1])*k)
+                      .style("display", "inline")
+                      .text(d.data.name);
+                    // d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`
 
                    d3.select("#textData").remove();
                   svg2.append("text")
@@ -427,30 +519,58 @@ Click to zoom in or out.`
                     .attr("font-size","12px")
                     // .attr("textLength","25%") //pour la longueur déterminée à l'avance du texte au cas où
                     // .attr("lengthAdjust","spacing") //idem
-                    .attr("x",25)
+                    .attr("x",350)
                     .attr("y",455)
                     //.attr("transform", `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`)
                     .text("name : " + d.data.name)
                     .append("tspan")
-                      .attr("x",25)
+                      .attr("x",350)
                       .attr("y",470)
-                      .text("Popularity (rated from 0 to 100) : "+d.data.value);
+                      .text("Popularity (rated from 0 to 100) : "+(d.data.value-10));
 
                       if (d.data.awards=="Yes") {
                         d3.select("#textData")
                         .append("tspan")
                           .attr("fill","red")
-                          .attr("x",25)
+                          .attr("x",350)
                           .attr("y",485)
                           .text("Has received awards");
                       }
                       else {
                         d3.select("#textData")
                         .append("tspan")
-                          .attr("x",25)
+                          .attr("x",350)
                           .attr("y",485)
                           .text("Has not received awards");
                       }
+
+                      d3.select("#textData")
+                                .append("tspan")
+                                  .attr("x",350)
+                                  .attr("y",500)
+                                  .text("Movie length (in minutes): " + dataFilms[d.data.name]["Length"].toString());
+
+                      d3.select("#textData")
+                                .append("tspan")
+                                  .attr("x",350)
+                                  .attr("y",515)
+                                  .text("Year: " + dataFilms[d.data.name]["Year"].toString());
+
+
+                    var pathFile = d.data.name.replace(",", "").replace(":", "").replace("?", "").replace("/", " ");
+                    pathFile = "images/film " + pathFile + " (" + dataFilms[d.data.name]["Year"].toString() + ")/image.png";
+
+                      svg2.append("image")
+                      //nom du film : d.data.name
+                      //year : dataFilms[d.data.name]["Year"].toString()
+                          .attr("xlink:href",pathFile)
+                          // .style("position","relative")
+                          .attr("x",186)
+                           .attr("y",376)
+                          .attr("width",148)
+                          .attr("height",198)
+                          .attr("preserveAspectRatio","none")
+
 
                   }
                 })
@@ -463,16 +583,20 @@ Click to zoom in or out.`
                 })
                 .on("click", d => focus !== d && (zoom(d), d3.event.stopPropagation()));
 
-	label = svg1.append("g")
-      .style("font", "10px sans-serif")
-      .attr("pointer-events", "none")
-      .attr("text-anchor", "middle")
-    .selectAll("text")
-    .data(zoomRoot.descendants())
-    .join("text")
-      .style("fill-opacity", d => d.parent === zoomRoot ? 1 : 0)
-      .style("display", d => d.parent === zoomRoot ? "inline" : "none")
-      .text(d => d.data.name);
+
+                console.log(zoomRoot.descendants());
+
+               label = svg1.append("g")
+                    .style("font", "10px sans-serif")
+                    .attr("pointer-events", "none")
+                    .attr("text-anchor", "middle")
+                  .selectAll("text")
+                  .data(zoomRoot.descendants())
+                  .join("text")
+                    .style("fill-opacity", d => d.parent === zoomRoot ? 1 : 0)
+                    .style("display", d => d.parent === zoomRoot ? "inline" : "none")
+                    .text(d => d.parent === zoomRoot ? (d.height==0 ? "" : d.data.name) : (d.children ? d.data.name : ""));
+
 
 	  zoom(zoomRoot);
                   }
@@ -550,18 +674,37 @@ Click to zoom in or out.`
 
     d3.select("#search").on("keypress", function() {
       if(d3.event.keyCode === 13){
+
+        //les cercles précédemments remplis sont remplis avec du blanc
+        d3.selectAll(".filledCircle")
+          .attr("style","fill:white;")
+          .attr("stroke",null);
+
+
       var text = this.value.trim();
             console.log(text);
             var entry1=text.replace(/\s/g,'').toLowerCase();
+
+            if (entry1.substring(entry1.length-4,entry1.length)==",the") {
+              entry1="the"+entry1.substring(0,entry1.length-4);
+            }
+
+
             d3.selectAll('circle')
             .each(function(d) {
               var id=d3.select(this).attr("id");
               if(id)
               {
                 var id1=id.toLowerCase();
+
+
                 if(id1.includes(entry1))
                 {
+                  console.log(id1.substring(id1.length-entry1.length,id1.length));
+
+
                   colorize_node(id);
+
                 }
               }
             });
@@ -574,13 +717,27 @@ Click to zoom in or out.`
     //removing spaces and normalizing text:
     var entry1=entry.replace(/\s/g,'').toLowerCase();
 
+    if (entry1.substring(entry1.length-4,entry1.length)==",the") {
+      entry1="the"+entry1.substring(0,entry1.length-4);
+    }
+
+    //les cercles précédemments remplis sont remplis avec du blanc
+    d3.selectAll(".filledCircle")
+      .attr("style","fill:white;")
+      .attr("stroke",null);
+
     d3.selectAll('circle')
     .each(function(d) {
       var id=d3.select(this).attr("id");
       var id1=id.toLowerCase();
       //console.log(id);
+
+
       if(id1.includes(entry1))
       {
+        console.log(id1.substring(id1.length-entry1.length,id1.length));
+
+
         colorize_node(id);
       }
     });
@@ -589,7 +746,21 @@ Click to zoom in or out.`
 
   function colorize_node(node_id)
   {
-    d3.select("#"+node_id).style('fill', 'orange').style("opacity", 0.5).attr("stroke", "#ff0066");
+    //console.log(node_id);
+    //
+    // if (previous_id!='') {
+    //   d3.select("#"+previous_id)
+    //   .style("fill","white")
+    //   .style("opacity",1)
+    //   .attr("stroke","null");
+    // }
+
+
+    d3.select("#"+node_id)
+      .attr("class","filledCircle") //classe pour pouvoir effacer les cercles remplis par la suite
+      .style('fill', 'orange')
+      .style("opacity", 0.5)
+      .attr("stroke", "#ff0066");
   }
   function autocomplete(inp, arr) {
     /*the autocomplete function takes two arguments,
@@ -656,17 +827,34 @@ Click to zoom in or out.`
             if (x) x[currentFocus].click();
           }
 
+
           var text = document.getElementById("search").value.trim();
-            console.log(text);
+            //console.log(text);
+
+            //les cercles précédemments remplis sont remplis avec du blanc
+            d3.selectAll(".filledCircle")
+              .attr("style","fill:white;")
+              .attr("stroke",null);
+
             var entry1=text.replace(/\s/g,'').toLowerCase();
+
+            if (entry1.substring(entry1.length-4,entry1.length)==",the") {
+              entry1="the"+entry1.substring(0,entry1.length-4);
+            }
+
             d3.selectAll('circle')
             .each(function(d) {
               var id=d3.select(this).attr("id");
               if(id)
               {
                 var id1=id.toLowerCase();
+
+
+
                 if(id1.includes(entry1))
                 {
+                  // console.log(id1.substring(id1.length-entry1.length,id1.length));
+
                   colorize_node(id);
                 }
               }
@@ -764,7 +952,7 @@ d3.format(",d")
   main.variable(observer("color")).define("color", ["d3"], function(d3){return(
 d3.scaleLinear()
     .domain([0, 5])
-    .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+    .range(["hsl(60, 20%, 100%)","hsl(60, 20%, 40%)"])
     .interpolate(d3.interpolateHcl)
 )});
   main.variable(observer("d3")).define("d3", ["require"], function(require){return(

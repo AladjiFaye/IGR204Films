@@ -41,6 +41,7 @@ Click to zoom in or out.`
             //on doit avoir un nom ne contenant que des lettres pour que celui ci soit "valide"
 
             let res = string.replace(/[\W_]+/g, ''); //https://stackoverflow.com/questions/30824525/remove-all-characters-that-are-not-letters-or-numbers-in-a-string
+            res=res.replace("1","a1");  //commencer un ID par un chiffre n'est pas permis par JS
             return res;
           }
 
@@ -61,6 +62,7 @@ Click to zoom in or out.`
                   var coord = d3.mouse(d3.event.currentTarget);
                   let name = getValidName(d.data.name);
                   let parentName = getValidName(d.parent.data.name);
+                  console.log(parentName+name);
                   d3.select("#"+parentName+name).attr("stroke", "#000");
                   if (!d.children) {
 

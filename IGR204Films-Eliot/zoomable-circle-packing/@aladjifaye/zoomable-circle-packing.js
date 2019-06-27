@@ -152,6 +152,11 @@ Click to zoom in or out.`
                                     .attr("y",515)
                                     .text("Year: " + dataFilms[d.data.name]["Year"].toString());
 
+                                    d3.select("#textData")
+                                              .append("tspan")
+                                                .attr("x",350)
+                                                .attr("y",530)
+                                                .text("Director: " + dataFilms[d.data.name]["Director"].toString());
 
 
                                     var pathFile = d.data.name.replace(",", "").replace(":", "").replace("?", "").replace("/", " ");
@@ -572,6 +577,12 @@ Click to zoom in or out.`
                                   .attr("y",515)
                                   .text("Year: " + dataFilms[d.data.name]["Year"].toString());
 
+                                  d3.select("#textData")
+                                            .append("tspan")
+                                              .attr("x",350)
+                                              .attr("y",530)
+                                              .text("Director: " + dataFilms[d.data.name]["Director"].toString());
+
 
                     var pathFile = d.data.name.replace(",", "").replace(":", "").replace("?", "").replace("/", " ");
                     pathFile = "images/film " + pathFile + " (" + dataFilms[d.data.name]["Year"].toString() + ")/image.png";
@@ -693,7 +704,7 @@ Click to zoom in or out.`
 
         //les cercles précédemments remplis sont remplis avec du blanc
         d3.selectAll(".filledCircle")
-          .attr("style","fill:white;")
+          .attr("style",d=>"fill:"+d.color+";")
           .attr("stroke",null);
 
 
@@ -739,7 +750,8 @@ Click to zoom in or out.`
 
     //les cercles précédemments remplis sont remplis avec du blanc
     d3.selectAll(".filledCircle")
-      .attr("style","fill:white;")
+    .attr("style",d=>"fill:"+d.color+";")
+
       .attr("stroke",null);
 
     d3.selectAll('circle')
@@ -774,7 +786,8 @@ Click to zoom in or out.`
 
     d3.select("#"+node_id)
       .attr("class","filledCircle") //classe pour pouvoir effacer les cercles remplis par la suite
-      .style('fill', '#ff8000')
+      .attr("color",d=>d.fill) //permet de pouvoir retrouver la couleur originale du cercle
+      .style('fill',d=>'#ff8000')
       .style("opacity", 0.5)
       .attr("stroke", "#ff0066");
   }
@@ -849,7 +862,8 @@ Click to zoom in or out.`
 
             //les cercles précédemments remplis sont remplis avec du blanc
             d3.selectAll(".filledCircle")
-              .attr("style","fill:white;")
+            .attr("style",d=>"fill:"+d.color+";")
+
               .attr("stroke",null);
 
             var entry1=text.replace(/\s/g,'').toLowerCase();

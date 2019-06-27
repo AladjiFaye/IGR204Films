@@ -786,7 +786,7 @@ Click to zoom in or out.`
 
     d3.select("#"+node_id)
       .attr("class","filledCircle") //classe pour pouvoir effacer les cercles remplis par la suite
-      .attr("color",d=>d.fill) //permet de pouvoir retrouver la couleur originale du cercle
+      .attr("color",d=>d.fill)
       .style('fill',d=>'#ff8000')
       .style("opacity", 0.5)
       .attr("stroke", "#ff0066");

@@ -19,7 +19,20 @@ Click to zoom in or out.`
   //   .attr("type", "text")
   //   .attr("placeholder", "Search...");
 
-  const svg1 = d3.select("#svg1")
+  function getValidName(string) {
+        //https://www.w3schools.com/jsref/jsref_replace.asp
+        //https://stackoverflow.com/questions/29246485/javascript-regex-problems-nothing-to-repeat
+        //on doit avoir un nom ne contenant que des lettres pour que celui ci soit "valide"
+
+        let res = string.replace(/[\W_]+/g, ''); //https://stackoverflow.com/questions/30824525/remove-all-characters-that-are-not-letters-or-numbers-in-a-string
+        // res=res.replace(/[0-9]+/g,"a1");  //commencer un ID par un chiffre n'est pas permis par JS
+        let f = res.charAt(0);
+        if (f=="0" || f=='1' || f=='2' || f=="3" || f=='4' || f=='5' || f=="6" || f=='7' || f=='8' || f=='9')
+         res="a"+res;//commencer un ID par un chiffre n'est pas permis par JS
+        return res;
+      }
+
+const svg1 = d3.select("#svg1")
       .attr("viewBox", `-${width / 2} -${height /2} ${width} ${height/1}`)
       .attr("width","50%")
       .attr("height",600)
@@ -29,10 +42,16 @@ Click to zoom in or out.`
       // .style("left","0px")
       .style("display", "block")
       .style("margin", "0 -14px")
-      .style("background", color(0))
+      .style("background", "white")
 	  //.style("fill-opacity", 0)
       .style("cursor", "pointer")
       .on("click", () => zoom(zoomRoot));
+
+let label;
+let zoomNode;
+
+function fillSvg1()
+{
 
       // const whiteband1 = svg1.append("rect")
       //   .attr("id","bandeau1")
@@ -42,21 +61,10 @@ Click to zoom in or out.`
       //   .attr("y","-375")
       //   .attr("style","stroke-width:3;stroke:rgb(0,0,0);fill-opacity:0;")
 
-      function getValidName(string) {
-            //https://www.w3schools.com/jsref/jsref_replace.asp
-            //https://stackoverflow.com/questions/29246485/javascript-regex-problems-nothing-to-repeat
-            //on doit avoir un nom ne contenant que des lettres pour que celui ci soit "valide"
-
-            let res = string.replace(/[\W_]+/g, ''); //https://stackoverflow.com/questions/30824525/remove-all-characters-that-are-not-letters-or-numbers-in-a-string
-            // res=res.replace(/[0-9]+/g,"a1");  //commencer un ID par un chiffre n'est pas permis par JS
-            let f = res.charAt(0);
-            if (f=="0" || f=='1' || f=='2' || f=="3" || f=='4' || f=='5' || f=="6" || f=='7' || f=='8' || f=='9')
-             res="a"+res;//commencer un ID par un chiffre n'est pas permis par JS
-            return res;
-          }
 
 
-            let zoomNode = svg1.append("g")
+
+            zoomNode = svg1.append("g")
               .selectAll("circle")
               .data(zoomRoot.descendants().slice(1))
               .join("circle")
@@ -187,8 +195,8 @@ Click to zoom in or out.`
                 })
                 .on("click", d => focus !== d && (zoom(d), d3.event.stopPropagation()));
 
-  let label = svg1.append("g")
-      .style("font", "10px sans-serif")
+  label = svg1.append("g")
+      .style("font", "15px sans-serif")
       .attr("pointer-events", "none")
       .attr("text-anchor", "middle")
     .selectAll("text")
@@ -196,7 +204,12 @@ Click to zoom in or out.`
     .join("text")
       .style("fill-opacity", d => d.parent === zoomRoot ? 1 : 0)
       .style("display", d => d.parent === zoomRoot ? "inline" : "none")
+      .attr("fill","red")
       .text(d => d.parent === zoomRoot ? d.data.name : (d.children ? d.data.name : ""));
+
+}
+
+      fillSvg1();
 
 
       const svg2 = d3.select("#svg2")
@@ -476,155 +489,8 @@ Click to zoom in or out.`
 					  svg1.selectAll("g").remove();
 
 
-
-
-					  zoomNode = svg1.append("g")
-              .selectAll("circle")
-              .data(zoomRoot.descendants().slice(1))
-              .join("circle")
-              .attr("fill", d => {
-                if (d.children){
-                  if (d.children[0].children) {
-                    return color(d.depth);
-                  }
-                  else {
-                    let mean_pop=0; //popularité moyenne des cercles
-                    for (let i = 0; i < d.children.length; i++) {
-                      mean_pop += d.children[i]["value"]/d.children.length;
-                    }
-                    let lightness = -0.85*mean_pop + 100;
-                    return "hsl(240,20%," +lightness+"%)";
-                  }
-              }
-              else {
-                if (d.data.awards=="Yes") {
-                  return "#ffff00";
-                }
-                else {
-                  return "white";
-                }
-              }
-                d.children ? color(d.depth) : d.data.awards=="Yes" ? "#ffff00" : "white";
-
-              })
-
-
-
-                .attr("id", d=>{
-                  let name = getValidName(d.data.name);
-                  let parentName = getValidName(d.parent.data.name);
-                  return parentName + name;
-                })
-                .on("mouseover", d=> {
-                  var v = [focus.x, focus.y, focus.r*2]
-                  var k = width / v[2];
-                  var coord = d3.mouse(d3.event.currentTarget);
-                  let name = getValidName(d.data.name);
-                  let parentName = getValidName(d.parent.data.name);
-
-                  d3.select("#"+parentName+name).attr("stroke", "#000");
-                  if (!d.children) {
-                    d3.select("#movieName").remove();
-                    svg1.append("text")
-                      .attr("id","movieName")
-                      .attr("font-size","12px")
-                      .attr("x",(d.x-v[0])*k)
-                      .attr("y",(d.y-v[1])*k)
-                      .style("display", "inline")
-                      .text(d.data.name);
-                    // d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`
-
-                   d3.select("#textData").remove();
-                  svg2.append("text")
-                    //.attr("id", "text"+d.data.name)
-                    .attr("id", "textData")
-                    //.attr("x",(d.x - v[0]) * k)
-                    //.attr("y",(d.y - v[1]) * k) //permet d'afficher sur la position du cercle au cas où...
-                    .attr("font-size","12px")
-                    // .attr("textLength","25%") //pour la longueur déterminée à l'avance du texte au cas où
-                    // .attr("lengthAdjust","spacing") //idem
-                    .attr("x",350)
-                    .attr("y",455)
-                    //.attr("transform", `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`)
-                    .text("name : " + d.data.name)
-                    .append("tspan")
-                      .attr("x",350)
-                      .attr("y",470)
-                      .text("Popularity (rated from 0 to 100) : "+(d.data.value-10));
-
-                      if (d.data.awards=="Yes") {
-                        d3.select("#textData")
-                        .append("tspan")
-                          .attr("fill","#ff8000")
-                          .attr("x",350)
-                          .attr("y",485)
-                          .text("Has received awards");
-                      }
-                      else {
-                        d3.select("#textData")
-                        .append("tspan")
-                          .attr("x",350)
-                          .attr("y",485)
-                          .text("Has not received awards");
-                      }
-
-                      d3.select("#textData")
-                                .append("tspan")
-                                  .attr("x",350)
-                                  .attr("y",500)
-                                  .text("Movie length (in minutes): " + dataFilms[d.data.name]["Length"].toString());
-
-                      d3.select("#textData")
-                                .append("tspan")
-                                  .attr("x",350)
-                                  .attr("y",515)
-                                  .text("Year: " + dataFilms[d.data.name]["Year"].toString());
-
-                                  d3.select("#textData")
-                                            .append("tspan")
-                                              .attr("x",350)
-                                              .attr("y",530)
-                                              .text("Director: " + dataFilms[d.data.name]["Director"].toString());
-
-
-                    var pathFile = d.data.name.replace(",", "").replace(":", "").replace("?", "").replace("/", " ");
-                    pathFile = "images/film " + pathFile + " (" + dataFilms[d.data.name]["Year"].toString() + ")/image.png";
-
-                      svg2.append("image")
-                      //nom du film : d.data.name
-                      //year : dataFilms[d.data.name]["Year"].toString()
-                          .attr("xlink:href",pathFile)
-                          // .style("position","relative")
-                          .attr("x",186)
-                           .attr("y",376)
-                          .attr("width",148)
-                          .attr("height",198)
-                          .attr("preserveAspectRatio","none")
-
-
-                  }
-                })
-                .on("mouseout", d=> {
-                  let name = getValidName(d.data.name);
-                  let parentName = getValidName(d.parent.data.name);
-                  d3.select("#" + parentName+name).attr("stroke", null);
-
-
-                })
-                .on("click", d => focus !== d && (zoom(d), d3.event.stopPropagation()));
-
-
-
-               label = svg1.append("g")
-                    .style("font", "10px sans-serif")
-                    .attr("pointer-events", "none")
-                    .attr("text-anchor", "middle")
-                  .selectAll("text")
-                  .data(zoomRoot.descendants())
-                  .join("text")
-                    .style("fill-opacity", d => d.parent === zoomRoot ? 1 : 0)
-                    .style("display", d => d.parent === zoomRoot ? "inline" : "none")
-                    .text(d => d.parent === zoomRoot ? (d.height==0 ? "" : d.data.name) : (d.children ? d.data.name : ""));
+            fillSvg1();
+          
 
 
 	  zoom(zoomRoot);

@@ -1,0 +1,14 @@
+{
+  "name": "@aladjifaye/zoomable-circle-packing",
+  "main": "@aladjifaye/zoomable-circle-packing.js",
+  "version": "275.0.0",
+  "homepage": "https://observablehq.com/@aladjifaye/zoomable-circle-packing",
+  "author": {
+    "name": "aladjifaye",
+    "url": "https://observablehq.com/@aladjifaye"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}

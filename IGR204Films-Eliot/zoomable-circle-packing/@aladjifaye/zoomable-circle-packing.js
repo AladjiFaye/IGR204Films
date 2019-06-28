@@ -49,10 +49,12 @@ Click to zoom in or out.`
 
             let res = string.replace(/[\W_]+/g, ''); //https://stackoverflow.com/questions/30824525/remove-all-characters-that-are-not-letters-or-numbers-in-a-string
             // res=res.replace(/[0-9]+/g,"a1");  //commencer un ID par un chiffre n'est pas permis par JS
-            return "a"+res; //commencer un ID par un chiffre n'est pas permis par JS
+            let f = res.charAt(0);
+            if (f=="0" || f=='1' || f=='2' || f=="3" || f=='4' || f=='5' || f=="6" || f=='7' || f=='8' || f=='9')
+             res="a"+res;//commencer un ID par un chiffre n'est pas permis par JS
+            return res;
           }
 
-            console.log(zoomRoot.descendants().slice(1));
 
             let zoomNode = svg1.append("g")
               .selectAll("circle")
@@ -519,6 +521,7 @@ Click to zoom in or out.`
                   var coord = d3.mouse(d3.event.currentTarget);
                   let name = getValidName(d.data.name);
                   let parentName = getValidName(d.parent.data.name);
+
                   d3.select("#"+parentName+name).attr("stroke", "#000");
                   if (!d.children) {
                     d3.select("#movieName").remove();
@@ -611,7 +614,6 @@ Click to zoom in or out.`
                 .on("click", d => focus !== d && (zoom(d), d3.event.stopPropagation()));
 
 
-                console.log(zoomRoot.descendants());
 
                label = svg1.append("g")
                     .style("font", "10px sans-serif")
@@ -682,12 +684,10 @@ Click to zoom in or out.`
   //     .on("keyup", function() {
   //
   //           var text = this.value.trim();
-  //           //console.log(text);
   //           var entry1=text.replace(/\s/g,'').toLowerCase();
   //           d3.selectAll('circle')
   //           .each(function(d) {
   //             var id=d3.select(this).attr("id");
-  //             //console.log(id);
   //             if(id)
   //             {
   //               var id1=id.toLowerCase();
@@ -710,7 +710,7 @@ Click to zoom in or out.`
 
       var text = this.value.trim();
             console.log(text);
-            var entry1=text.replace(/\s/g,'').toLowerCase();
+            var entry1=getValidName(text).toLowerCase();
 
             if (entry1.substring(entry1.length-4,entry1.length)==",the") {
               entry1="the"+entry1.substring(0,entry1.length-4);
@@ -727,7 +727,6 @@ Click to zoom in or out.`
 
                 if(id1.includes(entry1))
                 {
-                  console.log(id1.substring(id1.length-entry1.length,id1.length));
 
 
                   colorize_node(id);
@@ -742,7 +741,7 @@ Click to zoom in or out.`
   function search(entry)
   {
     //removing spaces and normalizing text:
-    var entry1=entry.replace(/\s/g,'').toLowerCase();
+    var entry1=getValidName(entry).toLowerCase();
 
     if (entry1.substring(entry1.length-4,entry1.length)==",the") {
       entry1="the"+entry1.substring(0,entry1.length-4);
@@ -758,12 +757,10 @@ Click to zoom in or out.`
     .each(function(d) {
       var id=d3.select(this).attr("id");
       var id1=id.toLowerCase();
-      //console.log(id);
 
 
       if(id1.includes(entry1))
       {
-        console.log(id1.substring(id1.length-entry1.length,id1.length));
 
 
         colorize_node(id);
@@ -774,7 +771,6 @@ Click to zoom in or out.`
 
   function colorize_node(node_id)
   {
-    //console.log(node_id);
     //
     // if (previous_id!='') {
     //   d3.select("#"+previous_id)
@@ -786,7 +782,7 @@ Click to zoom in or out.`
 
     d3.select("#"+node_id)
       .attr("class","filledCircle") //classe pour pouvoir effacer les cercles remplis par la suite
-      .attr("color",d=>d.fill)
+      .attr("color",d=>d.fill) //permet de pouvoir retrouver la couleur originale du cercle
       .style('fill',d=>'#ff8000')
       .style("opacity", 0.5)
       .attr("stroke", "#ff0066");
@@ -858,7 +854,6 @@ Click to zoom in or out.`
 
 
           var text = document.getElementById("search").value.trim();
-            //console.log(text);
 
             //les cercles précédemments remplis sont remplis avec du blanc
             d3.selectAll(".filledCircle")
@@ -866,7 +861,8 @@ Click to zoom in or out.`
 
               .attr("stroke",null);
 
-            var entry1=text.replace(/\s/g,'').toLowerCase();
+            var entry1=getValidName(text).toLowerCase();
+
 
             if (entry1.substring(entry1.length-4,entry1.length)==",the") {
               entry1="the"+entry1.substring(0,entry1.length-4);
@@ -883,7 +879,6 @@ Click to zoom in or out.`
 
                 if(id1.includes(entry1))
                 {
-                  // console.log(id1.substring(id1.length-entry1.length,id1.length));
 
                   colorize_node(id);
                 }
@@ -943,7 +938,6 @@ Click to zoom in or out.`
 // window.refresh_search=function()
 //   {
 //     var entry = document.getElementById('entry').innerText;
-//     console.log(entry);
 //     search(entry);
 //   }
 
